@@ -24,7 +24,7 @@ The purpose was to combine all the Unity knowledge acquired during the course in
 
 It was a challenging and fun experience wich I worked on with 4 other students from my programming course.
 
-I worked mainly on the UI (both design and functionalities), bullets logic, power ups, score system and audio. I also did the level design of the map.
+I worked mainly on the UI (both design and functionalities), bullets logic, player logic, power ups, score system and audio. I also made the level design of the map.
 
 ## Bullets
 
@@ -76,7 +76,7 @@ private void HomingMovement()
 
  
 
-That homingTimer indicates the time that must elapse before the bullet follow the enemy, a choice made to simulate the initial impulse of the shot 
+That homingTimer indicates the time that must elapse before the bullet follow the enemy, a choice I made to simulate the initial impulse of the shot.
 
 
 https://github.com/user-attachments/assets/ee7c29b6-65ec-4570-b7e2-68fabbc7eee5
@@ -84,6 +84,18 @@ https://github.com/user-attachments/assets/ee7c29b6-65ec-4570-b7e2-68fabbc7eee5
 ## Power ups
 
 There are 4 different power ups: one heals half of life, one adds an amount of armor (up to a maximum limit), one makes bullets homing and the fourth is a grenade.
+
+Power ups inherit from a parent class, which will have only one virtual method:
+
+``` cs                                  
+public class PowerUp : MonoBehaviour
+{
+    public virtual void PickUp(GameObject owner)
+    {
+        
+    }
+}
+```
 
 When the grenade explodes it not only does damage to enemies but also pushes them away
 
@@ -129,7 +141,138 @@ Video:
 
 https://github.com/user-attachments/assets/a41ea064-91d4-45c1-85f0-3270f45066ff
 
-> **_Rotating effect:_** I also made a class that takes care of rotating all objects dropped by enemies to make them more visible. In its Update it will take care of rotating all the objects it has registered.
+> **_Rotating effect:_** I also made a class that takes care of rotating all objects dropped by enemies to make them more visible. In its Update it will rotate all the objects it has registered.
+
+
+## UI
+
+Among the menus I made it was a bit tricky to figure out how to create a menu of options.
+
+In the end I chose to use PlayerPrefs to save the camera sensitivity value, so that the value can remain the same every time a new game is played.
+
+
+
+
+https://github.com/user-attachments/assets/18f29547-64e7-49a6-ba07-e75f95e9644b
+
+
+
+
+I also chose to make it accessible from the pause menu for player comfort.
+
+For the settings I used a slider to try out an element of the ui that I had not used before.
+
+
+
+The Player Prefs were also useful for the score system, they allowed me to make sure that the highest score (the Record) made by the player is taken into account as well as the current score.
+
+
+
+``` cs 
+if (PlayerPrefs.HasKey("Record"))
+{
+    int record = PlayerPrefs.GetInt("Record");
+
+    if (points > record)
+    {
+        PlayerPrefs.SetInt("Record", points);
+    }
+}
+else
+{
+    PlayerPrefs.SetInt("Record", points);
+}
+
+PlayerPrefs.SetInt("Current", points);
+```
+
+
+
+
+![image](https://github.com/user-attachments/assets/d92c2b3f-75b1-48f0-a803-104c0eec5489)
+
+
+
+
+
+
+## Audio
+
+
+I created a single mixer that handles the volume of the music.
+
+There is a class that handles the musics that are always playing, but at different volumes.
+
+
+``` cs 
+public void MusicStart()
+{
+    currentType = startType;
+
+    for (int i = 0; i < musicSources.Length; i++)
+    {
+        musicSources[i].Play();
+    }
+
+    StartCoroutine(AudioManager.Instance.AdjustVolumeRoutine(startType, fadeInTime, 1));
+}
+```
+
+This allows me to create a fade in effect for the music, that does not have to be instantaneous but gradual.
+
+When the music changes I will have a smooth transition between one track and the next.
+
+``` cs 
+public IEnumerator AdjustVolumeRoutine(MusicType type, float duration, float targetVolume, float startDelay = 0)
+{
+    yield return new WaitForSeconds(startDelay);
+
+    string paramName = GetMixerParamName(type);
+
+    targetVolume = Mathf.Clamp(targetVolume, 0.0001f, 1);
+
+    float currentTime = 0;
+    float currentVolume = 0;
+    mixer.GetFloat(paramName, out currentVolume);
+    currentVolume = Mathf.Pow(10, currentVolume / 20);
+
+    while (currentTime < duration)
+    {
+        currentTime += Time.deltaTime;
+
+        float newVolume = Mathf.Lerp(currentVolume, targetVolume, currentTime / duration);
+        newVolume = Mathf.Log10(newVolume) * 20;
+        mixer.SetFloat(paramName, newVolume);
+
+        yield return null;
+    }
+
+    mixer.SetFloat(paramName, Mathf.Log10(targetVolume) * 20);
+
+    yield break;
+}
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
