@@ -55,7 +55,7 @@ protected void StandardMovement()
 
 It is possible, however, to pick up a power up that makes bullets homing for a certain period of time, in which case their movement must change.
 
-Before firing, the closest enemy within the player's range of vision is found and the bullet will be bound to follow him.
+Before firing, the closest enemy within the player's range of vision is found and the bullet will be bound to follow him
 
 ``` cs 
 private void HomingMovement()
@@ -76,7 +76,7 @@ private void HomingMovement()
 
  
 
-That homingTimer indicates the time that must elapse before the bullet follow the enemy, a choice I made to simulate the initial impulse of the shot.
+That homingTimer indicates the time that must elapse before the bullet follow the enemy, a choice I made to simulate the initial impulse of the shot
 
 
 https://github.com/user-attachments/assets/ee7c29b6-65ec-4570-b7e2-68fabbc7eee5
@@ -164,7 +164,7 @@ For the settings I used a slider to try out an element of the ui that I had not 
 
 
 
-The Player Prefs were also useful for the score system, they allowed me to make sure that the highest score (the Record) made by the player is taken into account as well as the current score.
+The Player Prefs were also useful for the score system, they allowed me to make sure that the highest score (the Record) made by the player is taken into account as well as the current score
 
 
 
@@ -201,7 +201,7 @@ PlayerPrefs.SetInt("Current", points);
 
 I created a single mixer that handles the volume of the music.
 
-There is a class that handles the musics that are always playing, but at different volumes.
+There is a class that handles the musics, which are always playing, but at different volumes (one of them have its volume set to zero)
 
 
 ``` cs 
@@ -218,9 +218,9 @@ public void MusicStart()
 }
 ```
 
-This allows me to create a fade in effect for the music, that does not have to be instantaneous but gradual.
+This allows me to create a fade-in effect for the music, that does not have to be instantaneous but gradual.
 
-When the music changes I will have a smooth transition between one track and the next.
+When the music changes I will have a smooth transition between one track and the next
 
 ``` cs 
 public IEnumerator AdjustVolumeRoutine(MusicType type, float duration, float targetVolume, float startDelay = 0)
