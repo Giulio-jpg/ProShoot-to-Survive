@@ -191,8 +191,27 @@ PlayerPrefs.SetInt("Current", points);
 
 ![image](https://github.com/user-attachments/assets/d92c2b3f-75b1-48f0-a803-104c0eec5489)
 
+The reload icon is a script attached to the weapon that is activated when the shots are finished.
+
+![reload](https://github.com/user-attachments/assets/2bc48ee2-9190-48eb-8906-c002c574e360)
+
+Once activated, the icon will fill within the indicated reload time and then deactivate:
+
+``` cs 
+if (image.fillAmount < 1)
+{
+    image.fillAmount += 1f / reloadTime * Time.deltaTime;
+
+    if (image.fillAmount >= 1)
+    {
+        gameObject.SetActive(false);
+        image.fillAmount = 0;
+    }
+}
+```
 
 
+https://github.com/user-attachments/assets/15e08b58-0139-4e8e-96f7-652b24757101
 
 
 
